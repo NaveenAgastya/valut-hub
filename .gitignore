@@ -1,0 +1,14 @@
+node_modules/
+
+#environment variables
+.env
+
+fronted/dist/
+backend/dist/
+
+.DS_Store
+*.log
+backend/prisma/migrations/
+
+.vscode/
+.idea/
