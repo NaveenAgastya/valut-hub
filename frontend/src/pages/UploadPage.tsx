@@ -1,4 +1,6 @@
 import { useState } from "react";
+import FileInfo from "../components/FileInfo";
+
 
 function UploadPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -77,16 +79,11 @@ function UploadPage() {
           <p className="text-gray-500 mt-2">or drag and drop</p>
         </div>
 
-        {/* Show selected file info */}
+        {/* File Info */}
         {selectedFile && (
-          <div className="mt-6 p-4 bg-white rounded-lg shadow">
-            <p className="text-gray-700">
-              <strong>Selected File:</strong> {selectedFile.name}
-            </p>
-            <p className="text-gray-500 text-sm mt-1">
-              File Size: {(selectedFile.size / 1024).toFixed(2)} KB
-            </p>
-            
+          <div className="mt-6">
+            <FileInfo file={selectedFile} onRemove={() => setSelectedFile(null)} />
+
             {/* Encryption Toggle */}
             <div className="mt-4 flex items-center">
               <input
