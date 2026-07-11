@@ -1,4 +1,6 @@
 import { useState } from "react";
+import FileInfo from "../components/FileInfo";
+
 
 function UploadPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -42,6 +44,30 @@ function UploadPage() {
     }
   };
 
+    const handleUploadToServer = async () => {
+    if (!selectedFile) return;
+
+    // 1. Create a FormData object (this is how browsers send files)
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      // 2. Send it to our local backend
+      const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        body: formData, // Do NOT set Content-Type header! Browser does it automatically for FormData
+      });
+
+      const data = await response.json();
+      console.log("Server says:", data.message);
+      alert("File saved to your codebase! Check the backend/uploads folder.");
+      
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload file.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
@@ -77,16 +103,11 @@ function UploadPage() {
           <p className="text-gray-500 mt-2">or drag and drop</p>
         </div>
 
-        {/* Show selected file info */}
+        {/* File Info */}
         {selectedFile && (
-          <div className="mt-6 p-4 bg-white rounded-lg shadow">
-            <p className="text-gray-700">
-              <strong>Selected File:</strong> {selectedFile.name}
-            </p>
-            <p className="text-gray-500 text-sm mt-1">
-              File Size: {(selectedFile.size / 1024).toFixed(2)} KB
-            </p>
-            
+          <div className="mt-6">
+            <FileInfo file={selectedFile} onRemove={() => setSelectedFile(null)} />
+
             {/* Encryption Toggle */}
             <div className="mt-4 flex items-center">
               <input
@@ -99,8 +120,17 @@ function UploadPage() {
               <label htmlFor="encrypt-toggle" className="ml-2 text-gray-700">
                 Encrypt File
               </label>
-            </div>          
-            </div>
+            </div>  
+            
+            {/* Upload Button */}
+            <button
+              onClick={handleUploadToServer}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Upload to Server
+            </button>
+          </div>        
+        
         )}
       </div>
     </div>
